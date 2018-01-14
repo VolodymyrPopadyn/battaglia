@@ -10,28 +10,10 @@ const int DIM = 10;
 const char NAVE = '*';
 const char COLPITO = 'x';
 const char ACQUA = 'o';
-const char VUOTO = ' ';
-//color
-const int black 	  = 0;
-const int dark_blue   = 1;
-const int dark_green  = 2;
-const int dark_aqua   = 3;
-const int dark_red 	  = 4;
-const int dark_purple = 5;
-const int dark_yellow = 6;
-const int dark_white  = 7;
-const int gray 		  = 8;
-const int blue 		  = 9;
-const int green 	  = 10;
-const int aqua 		  = 11;
-const int red 		  = 12;
-const int purple 	  = 13;
-const int yellow 	  = 14;
-const int white 	  = 15;
+int PORTA = 2620;			//modificare questa in base alla rete
 
-//sezione del client
-int init_winsock(void)
-{
+//sezione del server
+init_winsock(void) {
 	WSADATA wsadata;
 	int err;
 	err=WSAStartup(MAKEWORD(2,2),&wsadata);
@@ -40,21 +22,11 @@ int init_winsock(void)
 	else
 	return 1;
 }
-//fine sezione client
-
-void setTextColor(int backcolor, int forecolor) {
-	HANDLE hConsole;
-	int colorattribute;
-	
-	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	colorattribute = forecolor + backcolor * 4;
-	SetConsoleTextAttribute(hConsole, colorattribute);
-}
+//fine sezione server
 
 //stampa di due griglie con anche intestazione di righe e colonne e il "nome" delle matrici
 void StampaGriglia(char G1[DIM][DIM], char G2[DIM][DIM]) {
 	int i, j;
-	setTextColor(black, white);
 	//se modifico la visualizzazione devo modificare sia la riga successiva, sia quella dopo ancora
 	printf("   Tabella avversaria                                 Tabella mia\n");
 	printf("   | A | B | C | D | E | F | G | H | I | J            | A | B | C | D | E | F | G | H | I | J \n");
@@ -63,41 +35,12 @@ void StampaGriglia(char G1[DIM][DIM], char G2[DIM][DIM]) {
 			printf("---+---+---+---+---+---+---+---+---+---+---        ---+---+---+---+---+---+---+---+---+---+---\n");
 			printf("%2d ",i);
 			for(j=0;j<DIM;j++) {
-				setTextColor(black, white);
-				printf("|");
-				if(G2[i][j]==NAVE) {
-					setTextColor(black, purple);
-					printf("%2c ", G1[i][j]);
-				} else if(G2[i][j]==COLPITO) {
-					setTextColor(black, red);
-					printf("%2c ", G1[i][j]);
-				} else if(G2[i][j]==ACQUA) {
-					setTextColor(black, aqua);
-					printf("%2c ", G1[i][j]);
-				} else {
-					setTextColor(black, white);
-					printf("%2c ", G1[i][j]);
-				}
+				printf("|%2c ", G1[i][j]);
 			}
-			setTextColor(black, white);
 			//sia questa prossima
 			printf("        %2d ",i);
 			for(j=0;j<DIM;j++) {
-				setTextColor(black, white);
-				printf("|");
-				if(G2[i][j]==NAVE) {
-					setTextColor(black, purple);
-					printf("%2c ", G2[i][j]);
-				} else if(G2[i][j]==COLPITO) {
-					setTextColor(black, red);
-					printf("%2c ", G2[i][j]);
-				} else if(G2[i][j]==ACQUA) {
-					setTextColor(black, aqua);
-					printf("%2c ", G2[i][j]);
-				} else {
-					setTextColor(black, white);
-					printf("%2c ", G2[i][j]);
-				}
+				printf("|%2c ", G2[i][j]);
 			}
 			printf("\n");
 		}
@@ -114,7 +57,7 @@ void GrigliaVuota(char G[DIM][DIM]) {
 	}
 }
 
-//controlla la sinistra della posizione passata con colonna e verifica se Ã¨ all'interno della matrice
+//controlla la sinistra della posizione passata con colonna e verifica se è all'interno della matrice
 void ControlloOrizzontaleSinistra(char matrice[DIM][DIM], int colonna, int riga, int x) {
 	int i;
 	if(colonna-x>=-1){
@@ -130,7 +73,7 @@ void ControlloOrizzontaleSinistra(char matrice[DIM][DIM], int colonna, int riga,
     }
 }
 
-//controlla la destra della posizione passata con colonna e verifica se Ã¨ all'interno della matrice
+//controlla la destra della posizione passata con colonna e verifica se è all'interno della matrice
 void ControlloOrizzontaleDestra(char matrice[DIM][DIM], int colonna, int riga, int x) {
 	int i;
     if(colonna+x<=10) {
@@ -146,7 +89,7 @@ void ControlloOrizzontaleDestra(char matrice[DIM][DIM], int colonna, int riga, i
     }
 }
 
-//controlla il sopra della posizione passata con colonna e verifica se Ã¨ all'interno della matrice
+//controlla il sopra della posizione passata con colonna e verifica se è all'interno della matrice
 void ControlloVerticaleSu(char matrice[DIM][DIM], int colonna, int riga, int x) {
 	int i;
 	if(riga-x>=-1){
@@ -162,7 +105,7 @@ void ControlloVerticaleSu(char matrice[DIM][DIM], int colonna, int riga, int x) 
     }
 }
 
-//controlla il sotto della posizione passata con colonna e verifica se Ã¨ all'interno della matrice
+//controlla il sotto della posizione passata con colonna e verifica se è all'interno della matrice
 void ControlloVerticaleGiu(char matrice[DIM][DIM], int colonna, int riga, int x) {
 	int i;
     if(riga+x<=10) {
@@ -207,7 +150,7 @@ int selezioneDirezione() {
 	int take;
 	do {
 		printf("1) La nave va in su\n");
-		printf("2) La nave va in giu'\n");
+		printf("2) La nave va in gi%c\n", 151);
 		printf("3) La nave va a destra\n");
 		printf("4) La nave va a sinistra\n");
 		printf("Inserisci la tua decisione: ");
@@ -223,7 +166,7 @@ void posizionaNave(char Griglia1[DIM][DIM], char Griglia2[DIM][DIM], int cl, int
 			ControlloVerticaleSu(Griglia2, cl, rg, x);
 			break;
 		
-		case 2:		//la nave va in giÃ¹\n
+		case 2:		//la nave va in giù\n
 			ControlloVerticaleGiu(Griglia2, cl, rg, x);
 			break;
 			
@@ -244,7 +187,7 @@ void prendiNave(char Griglia1[DIM][DIM], char Griglia2[DIM][DIM], char cl, char 
 	posizionaNave(Griglia1, Griglia2, cl, rg, x, dir);
 }
 
-//funzione per determinare se si Ã¨ presa una nave oppure no
+//funzione per determinare se si è presa una nave oppure no
 int naveColpita(char G1[DIM][DIM], int col, int rig) {
 	if(G1[rig][col] == NAVE) {
 		return 1;
@@ -340,7 +283,7 @@ int accettabile( char matrice[DIM][DIM], int x, int colonna, int riga, int dir) 
 int main() {
 	char Griglia1[DIM][DIM];         //matrice per l'avversario
 	char Griglia2[DIM][DIM];         //matrice utilizzata da me
-	int i, j, x, dir;
+	int i, j, dim, dir;
 	char cooIns[4];
 	char cl, rg;
 	int nave2 = 4;
@@ -348,6 +291,7 @@ int main() {
 	int nave4 = 2;
 	int nave6 = 1;
 	int contNavi = 0;
+	int vittoria = -1;
 	
 	GrigliaVuota(Griglia1);
 	GrigliaVuota(Griglia2);
@@ -357,21 +301,21 @@ int main() {
 		do {
 			do {
 				printf("Scegli la grandezza della nave che vuoi inserire (2,3,4,6): ");
-				scanf("%d",&x);
-			}while(x!=2 && x!=3 && x!=4 && x!=6);
+				scanf("%d",&dim);
+			}while(dim!=2 && dim!=3 && dim!=4 && dim!=6);
 			do {
 				printf("Inserisci le coordinate iniziali della nave (es. A9): ");
 				scanf("%s", cooIns);
 				cl = cooIns[0] - 65;
 				rg = cooIns[1] - 48;
-			}while( Griglia2[rg][cl] == NAVE || ((cl<0 || cl>9) || (rg<0 || rg>9)) );
+			}while( Griglia2[rg][cl] == NAVE || ((cl<0 || cl>9) || (rg<0 || rg>9)) ||cooIns[2]!=0);
 			dir = selezioneDirezione();
-		}while(accettabile(Griglia2, x, cl, rg, dir) != 1);
+		}while(accettabile(Griglia2, dim, cl, rg, dir) != 1);
 		
-		switch(x) {
+		switch(dim) {
 			case 2: 
 				if(nave2>0){
-					prendiNave(Griglia1, Griglia2, cl, rg, x, dir);
+					prendiNave(Griglia1, Griglia2, cl, rg, dim, dir);
 					nave2--;
 					contNavi++;
 				} else {
@@ -380,7 +324,7 @@ int main() {
 				break;
 			case 3: 
 				if(nave3>0) {
-					prendiNave(Griglia1, Griglia2, cl, rg, x, dir);
+					prendiNave(Griglia1, Griglia2, cl, rg, dim, dir);
 					nave3--;
 					contNavi++;
 				} else {
@@ -389,7 +333,7 @@ int main() {
 				break;
 			case 4: 
 				if(nave4>0) {
-					prendiNave(Griglia1, Griglia2, cl, rg, x, dir);
+					prendiNave(Griglia1, Griglia2, cl, rg, dim, dir);
 					nave4--;
 					contNavi++;
 				} else {
@@ -398,7 +342,7 @@ int main() {
 				break;
 			case 6: 
 				if(nave6>0) {
-					prendiNave(Griglia1, Griglia2, cl, rg, x, dir);
+					prendiNave(Griglia1, Griglia2, cl, rg, dim, dir);
 					nave6--;
 					contNavi++;
 				} else {
@@ -406,53 +350,83 @@ int main() {
 				} 
 				break;		
 		}
-	} while(contNavi!=10);
+	} while(contNavi!=1);
 	
-	int sock, port,flag;
-	char ip[17];
+	int sock, clientsd, port = PORTA;
 	char buffer[256];
 	char buffer2[256];
+	int flag;
 	struct sockaddr_in saddr;
 
-	if(!init_winsock()){
-		printf("Errore durante l'inizializzazione di winsock2.\n");
-		return -1;
+	if(!init_winsock()) {
+	  printf("Errore durante l'inizializzazione di winsock2.\n");
+	  return -1;
 	}
 
-	printf("Server Ip: ");
-	scanf("%16s", ip);
-
-	printf("Server Port: ");
-	scanf("%d", &port);
-
-	if((sock = socket(PF_INET, SOCK_STREAM, 0)) < 0){
-		printf("Errore durante la creazione del socket.\n");
-		return -1;
+	if((sock = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
+	  printf("Errore durante la creazione del socket.\n");
+	  return -1;
 	}
 
 	saddr.sin_family = PF_INET;
-	saddr.sin_addr.s_addr = inet_addr(ip);
+	saddr.sin_addr.s_addr = INADDR_ANY;
 	saddr.sin_port = htons(port);
 
-	if(connect(sock, (struct sockaddr *) &saddr, sizeof(saddr)) < 0){
-		printf("Errore durante la connessione a %s:%d\n", ip, port);
-		return -1;
+	if((bind(sock, (struct sockaddr *) &saddr, sizeof(saddr))) < 0) {
+	  printf("Errore durante il binding del socket.\n");
+	  return -1;
 	}
 
-	printf("Connessione correttamente stabilita con %s:%d\n", ip, port);
-	printf("Ora e' possibile digitare messaggi da inviare al server\n\n");
+	if((listen(sock, 1)) < 0) {
+	  printf("Errore durante il settaggio del socket in listening.\n");
+	  return -1;
+	}
 
-	//comunicazione
-	int naviColpite = 0;
-	flag = 1;
-	int controlloInserimento = 0;
+	printf("In attesa che un client si connetta...\n");
+	clientsd = accept(sock, NULL, NULL);
+	printf("Si e' connesso un client.\n\n");
+
 	char colIns, rigIns, colRic, rigRic, preso;
-	do{
+	int controlloInserimento = 0;
+	int naviColpite = 0;
+	do {
 		system("cls");
 		StampaGriglia(Griglia1, Griglia2);
+		//invia le coordinate
+		do {
+			
+			printf("\rInserisci le coordinate che desideri colpire: ");
+			scanf("%s", &buffer);
+			colIns = buffer[0] - 65;
+			rigIns = buffer[1] - 48;
+		}while( (colIns<0 || colIns>=9) && (rigIns<0 || rigIns>=9) ||buffer[2]!=0);
+		send(clientsd, buffer, sizeof(buffer), 0);
+		flag = 1;
+		fflush(stdin);
+
+		//riceve colpito?
+		while(controlloInserimento != 1){
+			while (recv(clientsd, buffer2, 255, 0) > 0 && flag ==1) {
+				flag = 0;
+				preso = buffer2[0];	//prendo il primo carattere
+			}
+			fflush(stdin);
+			flag = 1;
+			controlloInserimento = 1;
+		}
+		controlloInserimento = 0;
+
+		//posizionamento sulla propria matrice colpito o acqua
+		switch(preso) {
+			case 101: vittoria = 1;
+			case 110: Griglia1[rigIns][colIns] = ACQUA; break;
+			case 121: Griglia1[rigIns][colIns] = COLPITO; break;
+		}
+		StampaGriglia(Griglia1, Griglia2);
+		
 		//riceve la lettera
 		while(controlloInserimento != 1){
-			while (recv(sock, buffer2, 255, 0) > 0 && flag ==1) {
+			while (recv(clientsd, buffer2, 255, 0) > 0 && flag ==1) {
 				printf("Lettera inserita: %s\n", buffer2);
 				flag = 0;
 				colRic = buffer2[0] - 65;
@@ -466,48 +440,29 @@ int main() {
 		
 		//verifica nave colpita
 		if(naveColpita(Griglia2, colRic, rigRic) == 1) {
-			strcpy(buffer, "y");		//y = yes, hit
-			riempiGriglia(Griglia2, colRic, rigRic, COLPITO);
+			strcpy(buffer, "y");
+			Griglia2[rigRic][colRic] = COLPITO;
+			naviColpite++;
 		} else {
-			strcpy(buffer, "n");		//n = no, no hit
-			riempiGriglia(Griglia2, colRic, rigRic, ACQUA);
+			strcpy(buffer, "n");
+			Griglia2[rigRic][colRic] = ACQUA;
+		}
+		if(naviColpite==31) {
+			strcpy(buffer, "e");	//end of game
 		}
 		//invia messaggio colpito?
-		send(sock, buffer, sizeof(buffer), 0);
+		send(clientsd, buffer, sizeof(buffer), 0);
 		StampaGriglia(Griglia1, Griglia2);
 		
-		//invia lettera
-		do {
-			
-			printf("\rInserisci le coordinate che desideri colpire: ");
-			scanf("%s", &buffer);
-			colIns = buffer[0] - 65;
-			rigIns = buffer[1] - 48;
-		}while( (colIns<0 || colIns>=9) && (rigIns<0 || rigIns>=9) && buffer[2]!=0);
-		send(sock, buffer, sizeof(buffer), 0);
-		flag = 1;
-		fflush(stdin);
-
-		//riceve colpito?
-		while(controlloInserimento != 1){
-			while (recv(sock, buffer2, 255, 0) > 0 && flag ==1) {
-				flag = 0;
-				preso = buffer2[0];	//prendo il primo carattere
-			}
-			fflush(stdin);
-			flag = 1;
-			controlloInserimento = 1;
-		}
-		controlloInserimento = 0;
-
-		//posizionamento sulla propria matrice colpito o acqua
-		switch(preso) {
-			case 110: Griglia1[rigIns][colIns] = ACQUA; break;
-			case 121: Griglia1[rigIns][colIns] = COLPITO; break;
-		}
-		
-	}while(naviColpite < 31);
+	}while(naviColpite!=31 || vittoria!=1);
 	
+	if(naviColpite==31) {
+		printf("Mi spiace, hai perso!");
+	} else {
+		printf("Congratulazioni!, Hai vinto!");
+	}
+
+	printf("Connessione persa.\n");
 	close(sock);
 	WSACleanup();
 	
