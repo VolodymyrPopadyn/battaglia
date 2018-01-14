@@ -63,15 +63,21 @@ void StampaGriglia(char G1[DIM][DIM], char G2[DIM][DIM]) {
 			printf("---+---+---+---+---+---+---+---+---+---+---        ---+---+---+---+---+---+---+---+---+---+---\n");
 			printf("%2d ",i);
 			for(j=0;j<DIM;j++) {
+				setTextColor(black, white);
 				printf("|");
 				if(G1[i][j]==NAVE) {
-					setTextColor(black, red);
+					setTextColor(black, purple);
+					printf(" * ", G1[i][j]);
 				} else if(G1[i][j]==COLPITO) {
 					setTextColor(black, red);
+					printf(" x ", G1[i][j]);
 				} else if(G1[i][j]==ACQUA) {
 					setTextColor(black, aqua);
+					printf(" o ", G1[i][j]);
+				} else {
+					setTextColor(black, white);
+					printf("%2c ", G1[i][j]);
 				}
-				printf("%2c ", G1[i][j]);
 			}
 			setTextColor(black, white);
 			//sia questa prossima
@@ -81,16 +87,16 @@ void StampaGriglia(char G1[DIM][DIM], char G2[DIM][DIM]) {
 				printf("|");
 				if(G2[i][j]==NAVE) {
 					setTextColor(black, purple);
-					printf(" * ", G1[i][j]);
+					printf(" * ", G2[i][j]);
 				} else if(G2[i][j]==COLPITO) {
 					setTextColor(black, red);
-					printf(" x ", G1[i][j]);
+					printf(" x ", G2[i][j]);
 				} else if(G2[i][j]==ACQUA) {
 					setTextColor(black, aqua);
-					printf(" o ", G1[i][j]);
+					printf(" o ", G2[i][j]);
 				} else {
 					setTextColor(black, white);
-					printf("%2c ", G1[i][j]);
+					printf("%2c ", G2[i][j]);
 				}
 			}
 			printf("\n");
@@ -108,7 +114,7 @@ void GrigliaVuota(char G[DIM][DIM]) {
 	}
 }
 
-//controlla la sinistra della posizione passata con colonna e verifica se è all'interno della matrice
+//controlla la sinistra della posizione passata con colonna e verifica se � all'interno della matrice
 void ControlloOrizzontaleSinistra(char matrice[DIM][DIM], int colonna, int riga, int x) {
 	int i;
 	if(colonna-x>=-1){
@@ -124,7 +130,7 @@ void ControlloOrizzontaleSinistra(char matrice[DIM][DIM], int colonna, int riga,
     }
 }
 
-//controlla la destra della posizione passata con colonna e verifica se è all'interno della matrice
+//controlla la destra della posizione passata con colonna e verifica se � all'interno della matrice
 void ControlloOrizzontaleDestra(char matrice[DIM][DIM], int colonna, int riga, int x) {
 	int i;
     if(colonna+x<=10) {
@@ -140,7 +146,7 @@ void ControlloOrizzontaleDestra(char matrice[DIM][DIM], int colonna, int riga, i
     }
 }
 
-//controlla il sopra della posizione passata con colonna e verifica se è all'interno della matrice
+//controlla il sopra della posizione passata con colonna e verifica se � all'interno della matrice
 void ControlloVerticaleSu(char matrice[DIM][DIM], int colonna, int riga, int x) {
 	int i;
 	if(riga-x>=-1){
@@ -156,7 +162,7 @@ void ControlloVerticaleSu(char matrice[DIM][DIM], int colonna, int riga, int x) 
     }
 }
 
-//controlla il sotto della posizione passata con colonna e verifica se è all'interno della matrice
+//controlla il sotto della posizione passata con colonna e verifica se � all'interno della matrice
 void ControlloVerticaleGiu(char matrice[DIM][DIM], int colonna, int riga, int x) {
 	int i;
     if(riga+x<=10) {
@@ -217,7 +223,7 @@ void posizionaNave(char Griglia1[DIM][DIM], char Griglia2[DIM][DIM], int cl, int
 			ControlloVerticaleSu(Griglia2, cl, rg, x);
 			break;
 		
-		case 2:		//la nave va in giù\n
+		case 2:		//la nave va in gi�\n
 			ControlloVerticaleGiu(Griglia2, cl, rg, x);
 			break;
 			
@@ -238,7 +244,7 @@ void prendiNave(char Griglia1[DIM][DIM], char Griglia2[DIM][DIM], char cl, char 
 	posizionaNave(Griglia1, Griglia2, cl, rg, x, dir);
 }
 
-//funzione per determinare se si è presa una nave oppure no
+//funzione per determinare se si � presa una nave oppure no
 int naveColpita(char G1[DIM][DIM], int col, int rig) {
 	if(G1[rig][col] == NAVE) {
 		return 1;
@@ -400,7 +406,7 @@ int main() {
 				} 
 				break;		
 		}
-	} while(contNavi!=10);
+	} while(contNavi!=1);
 	
 	int sock, port,flag;
 	char ip[17];
@@ -444,7 +450,7 @@ int main() {
 	do{
 		system("cls");
 		StampaGriglia(Griglia1, Griglia2);
-		//riceve la lettera
+		//riceve coordinate
 		while(controlloInserimento != 1){
 			while (recv(sock, buffer2, 255, 0) > 0 && flag ==1) {
 				printf("Lettera inserita: %s\n", buffer2);
@@ -468,9 +474,10 @@ int main() {
 		}
 		//invia messaggio colpito?
 		send(sock, buffer, sizeof(buffer), 0);
-		StampaGriglia(Griglia1, Griglia2);
 		
-		//invia lettera
+		system("cls");
+		StampaGriglia(Griglia1, Griglia2);
+		//invia coordinate
 		do {
 			
 			printf("\rInserisci le coordinate che desideri colpire: ");
