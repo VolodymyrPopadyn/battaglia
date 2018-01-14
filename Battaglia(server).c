@@ -11,6 +11,23 @@ const char NAVE = '*';
 const char COLPITO = 'x';
 const char ACQUA = 'o';
 int PORTA = 2620;			//modificare questa in base alla rete
+//color
+const int black 	  = 0;
+const int dark_blue   = 1;
+const int dark_green  = 2;
+const int dark_aqua   = 3;
+const int dark_red 	  = 4;
+const int dark_purple = 5;
+const int dark_yellow = 6;
+const int dark_white  = 7;
+const int gray 		  = 8;
+const int blue 		  = 9;
+const int green 	  = 10;
+const int aqua 		  = 11;
+const int red 		  = 12;
+const int purple 	  = 13;
+const int yellow 	  = 14;
+const int white 	  = 15;
 
 //sezione del server
 init_winsock(void) {
@@ -24,9 +41,19 @@ init_winsock(void) {
 }
 //fine sezione server
 
+void setTextColor(int backcolor, int forecolor) {
+	HANDLE hConsole;
+	int colorattribute;
+	
+	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	colorattribute = forecolor + backcolor * 4;
+	SetConsoleTextAttribute(hConsole, colorattribute);
+}
+
 //stampa di due griglie con anche intestazione di righe e colonne e il "nome" delle matrici
 void StampaGriglia(char G1[DIM][DIM], char G2[DIM][DIM]) {
 	int i, j;
+	setTextColor(black, white);
 	//se modifico la visualizzazione devo modificare sia la riga successiva, sia quella dopo ancora
 	printf("   Tabella avversaria                                 Tabella mia\n");
 	printf("   | A | B | C | D | E | F | G | H | I | J            | A | B | C | D | E | F | G | H | I | J \n");
@@ -35,12 +62,35 @@ void StampaGriglia(char G1[DIM][DIM], char G2[DIM][DIM]) {
 			printf("---+---+---+---+---+---+---+---+---+---+---        ---+---+---+---+---+---+---+---+---+---+---\n");
 			printf("%2d ",i);
 			for(j=0;j<DIM;j++) {
-				printf("|%2c ", G1[i][j]);
+				printf("|");
+				if(G1[i][j]==NAVE) {
+					setTextColor(black, red);
+				} else if(G1[i][j]==COLPITO) {
+					setTextColor(black, red);
+				} else if(G1[i][j]==ACQUA) {
+					setTextColor(black, aqua);
+				}
+				printf("%2c ", G1[i][j]);
 			}
+			setTextColor(black, white);
 			//sia questa prossima
 			printf("        %2d ",i);
 			for(j=0;j<DIM;j++) {
-				printf("|%2c ", G2[i][j]);
+				setTextColor(black, white);
+				printf("|");
+				if(G2[i][j]==NAVE) {
+					setTextColor(black, purple);
+					printf(" * ", G1[i][j]);
+				} else if(G2[i][j]==COLPITO) {
+					setTextColor(black, red);
+					printf(" x ", G1[i][j]);
+				} else if(G2[i][j]==ACQUA) {
+					setTextColor(black, aqua);
+					printf(" o ", G1[i][j]);
+				} else {
+					setTextColor(black, white);
+					printf("%2c ", G1[i][j]);
+				}
 			}
 			printf("\n");
 		}
