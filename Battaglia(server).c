@@ -62,15 +62,21 @@ void StampaGriglia(char G1[DIM][DIM], char G2[DIM][DIM]) {
 			printf("---+---+---+---+---+---+---+---+---+---+---        ---+---+---+---+---+---+---+---+---+---+---\n");
 			printf("%2d ",i);
 			for(j=0;j<DIM;j++) {
+				setTextColor(black, white);
 				printf("|");
 				if(G1[i][j]==NAVE) {
-					setTextColor(black, red);
+					setTextColor(black, purple);
+					printf(" * ", G1[i][j]);
 				} else if(G1[i][j]==COLPITO) {
 					setTextColor(black, red);
+					printf(" x ", G1[i][j]);
 				} else if(G1[i][j]==ACQUA) {
 					setTextColor(black, aqua);
+					printf(" o ", G1[i][j]);
+				} else {
+					setTextColor(black, white);
+					printf("%2c ", G1[i][j]);
 				}
-				printf("%2c ", G1[i][j]);
 			}
 			setTextColor(black, white);
 			//sia questa prossima
@@ -80,16 +86,16 @@ void StampaGriglia(char G1[DIM][DIM], char G2[DIM][DIM]) {
 				printf("|");
 				if(G2[i][j]==NAVE) {
 					setTextColor(black, purple);
-					printf(" * ", G1[i][j]);
+					printf(" * ", G2[i][j]);
 				} else if(G2[i][j]==COLPITO) {
 					setTextColor(black, red);
-					printf(" x ", G1[i][j]);
+					printf(" x ", G2[i][j]);
 				} else if(G2[i][j]==ACQUA) {
 					setTextColor(black, aqua);
-					printf(" o ", G1[i][j]);
+					printf(" o ", G2[i][j]);
 				} else {
 					setTextColor(black, white);
-					printf("%2c ", G1[i][j]);
+					printf("%2c ", G2[i][j]);
 				}
 			}
 			printf("\n");
@@ -472,9 +478,10 @@ int main() {
 			case 110: Griglia1[rigIns][colIns] = ACQUA; break;
 			case 121: Griglia1[rigIns][colIns] = COLPITO; break;
 		}
+		system("cls");
 		StampaGriglia(Griglia1, Griglia2);
-		
-		//riceve la lettera
+	
+		//riceve coordinate
 		while(controlloInserimento != 1){
 			while (recv(clientsd, buffer2, 255, 0) > 0 && flag ==1) {
 				printf("Lettera inserita: %s\n", buffer2);
