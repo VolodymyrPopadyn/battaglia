@@ -337,12 +337,20 @@ int accettabile( char matrice[DIM][DIM], int x, int colonna, int riga, int dir) 
 	}
 }
 
+void menShip(int n2, int n3, int n4, int n6) {
+	printf("Ti rimangono ancora queste navi:\n");
+	printf("%d navi da 2\n", n2);
+	printf("%d navi da 3\n", n3);
+	printf("%d navi da 4\n", n4);
+	printf("%d navi da 6\n", n6);
+}
+
 int main() {
 	char Griglia1[DIM][DIM];         //matrice per l'avversario
 	char Griglia2[DIM][DIM];         //matrice utilizzata da me
-	int i, j, x, dir;
+	int i, j, dir;
 	char cooIns[4];
-	char cl, rg;
+	char cl, rg, x;
 	int nave2 = 4;
 	int nave3 = 3;
 	int nave4 = 2;
@@ -356,16 +364,24 @@ int main() {
 	
 	do {
 		do {
+			menShip(nave2, nave3, nave4, nave6);
 			do {
-				printf("Scegli la grandezza della nave che vuoi inserire (2,3,4,6): ");
-				scanf("%d",&x);
-			}while(x!=2 && x!=3 && x!=4 && x!=6);
+				printf("\rScegli la grandezza della nave che vuoi inserire (2,3,4,6): ");
+				scanf("%c",&x);
+				switch(x) {
+					case 50: if(nave2>0) { } else { x = 1; }; break;
+					case 51: if(nave3>0) { } else { x = 1; }; break;
+					case 52: if(nave4>0) { } else { x = 1; }; break;
+					case 54: if(nave6>0) { } else { x = 1; }; break;
+				}
+			}while( x!=50 && x!=51 && x!=52 && x!=54 );
+			x -= 48;
 			do {
 				printf("Inserisci le coordinate iniziali della nave (es. A9): ");
 				scanf("%s", cooIns);
 				cl = cooIns[0] - 65;
 				rg = cooIns[1] - 48;
-			}while( Griglia2[rg][cl] == NAVE || ((cl<0 || cl>9) || (rg<0 || rg>9)) );
+			}while( Griglia2[rg][cl] == NAVE || ((cl<0 || cl>9) || (rg<0 || rg>9)) || cooIns[2]!=0);
 			dir = selezioneDirezione();
 		}while(accettabile(Griglia2, x, cl, rg, dir) != 1);
 		
@@ -407,7 +423,7 @@ int main() {
 				} 
 				break;		
 		}
-	} while(contNavi!=1);
+	} while(contNavi!=10);
 	
 	int sock, port,flag;
 	char ip[17];
