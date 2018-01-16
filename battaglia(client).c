@@ -348,6 +348,7 @@ int main() {
 	int nave4 = 2;
 	int nave6 = 1;
 	int contNavi = 0;
+	int vittoria = -1;
 	
 	GrigliaVuota(Griglia1);
 	GrigliaVuota(Griglia2);
@@ -465,7 +466,10 @@ int main() {
 		controlloInserimento = 0;
 		
 		//verifica nave colpita
-		if(naveColpita(Griglia2, colRic, rigRic) == 1) {
+		if(colRic == 101) {
+			vittoria = 1;
+			buffer[0] = 'e';			//e = end of game
+		} else if(naveColpita(Griglia2, colRic, rigRic) == 1) {
 			strcpy(buffer, "y");		//y = yes, hit
 			riempiGriglia(Griglia2, colRic, rigRic, COLPITO);
 		} else {
@@ -477,37 +481,39 @@ int main() {
 		
 		system("cls");
 		StampaGriglia(Griglia1, Griglia2);
-		//invia coordinate
-		do {
-			
-			printf("\rInserisci le coordinate che desideri colpire: ");
-			scanf("%s", &buffer);
-			colIns = buffer[0] - 65;
-			rigIns = buffer[1] - 48;
-		}while( (colIns<0 || colIns>=9) && (rigIns<0 || rigIns>=9) && buffer[2]!=0);
-		send(sock, buffer, sizeof(buffer), 0);
-		flag = 1;
-		fflush(stdin);
-
-		//riceve colpito?
-		while(controlloInserimento != 1){
-			while (recv(sock, buffer2, 255, 0) > 0 && flag ==1) {
-				flag = 0;
-				preso = buffer2[0];	//prendo il primo carattere
-			}
-			fflush(stdin);
+		if(vittoria != 1) {
+			//invia coordinate
+			do {
+				
+				printf("\rInserisci le coordinate che desideri colpire: ");
+				scanf("%s", &buffer);
+				colIns = buffer[0] - 65;
+				rigIns = buffer[1] - 48;
+			}while( (colIns<0 || colIns>=9) && (rigIns<0 || rigIns>=9) && buffer[2]!=0);
+			send(sock, buffer, sizeof(buffer), 0);
 			flag = 1;
-			controlloInserimento = 1;
-		}
-		controlloInserimento = 0;
+			fflush(stdin);
 
-		//posizionamento sulla propria matrice colpito o acqua
-		switch(preso) {
-			case 110: Griglia1[rigIns][colIns] = ACQUA; break;
-			case 121: Griglia1[rigIns][colIns] = COLPITO; break;
+			//riceve colpito?
+			while(controlloInserimento != 1){
+				while (recv(sock, buffer2, 255, 0) > 0 && flag ==1) {
+					flag = 0;
+					preso = buffer2[0];	//prendo il primo carattere
+				}
+				fflush(stdin);
+				flag = 1;
+				controlloInserimento = 1;
+			}
+			controlloInserimento = 0;
+
+			//posizionamento sulla propria matrice colpito o acqua
+			switch(preso) {
+				case 110: Griglia1[rigIns][colIns] = ACQUA; break;
+				case 121: Griglia1[rigIns][colIns] = COLPITO; break;
+			}
+			
 		}
-		
-	}while(naviColpite < 31);
+	}while(naviColpite < 31 || vittoria!=1);
 	
 	close(sock);
 	WSACleanup();
