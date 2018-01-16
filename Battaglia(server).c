@@ -474,7 +474,6 @@ int main() {
 
 		//posizionamento sulla propria matrice colpito o acqua
 		switch(preso) {
-			case 101: vittoria = 1;
 			case 110: Griglia1[rigIns][colIns] = ACQUA; break;
 			case 121: Griglia1[rigIns][colIns] = COLPITO; break;
 		}
@@ -496,6 +495,7 @@ int main() {
 		controlloInserimento = 0;
 		
 		//verifica nave colpita
+		
 		if(naveColpita(Griglia2, colRic, rigRic) == 1) {
 			strcpy(buffer, "y");
 			Griglia2[rigRic][colRic] = COLPITO;
