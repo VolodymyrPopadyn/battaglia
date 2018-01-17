@@ -242,9 +242,9 @@ int accettabile( char matrice[DIM][DIM], int x, int colonna, int riga, int dir) 
 	switch(dir) {
 		case 1:
 			if(riga-x>=0) {
-				for(i=1; i<x; i++) {
+				for(i=1; i<=x; i++) {
 					riga--;
-					if(matrice[riga][colonna] == NAVE) {
+					if(matrice[riga][colonna] == NAVE || matrice[riga][colonna-1]==NAVE || matrice[riga][colonna+1]==NAVE) {
 						return -1;
 					}
 				}
@@ -255,9 +255,9 @@ int accettabile( char matrice[DIM][DIM], int x, int colonna, int riga, int dir) 
 			break;
 		case 2:
 			if(riga+x<=10) {
-				for(i=1; i<x; i++) {
+				for(i=1; i<=x; i++) {
 					riga++;
-					if(matrice[riga][colonna] == NAVE) {
+					if(matrice[riga][colonna] == NAVE || matrice[riga][colonna-1]==NAVE || matrice[riga][colonna+1]==NAVE) {
 						return -1;
 					}
 				}
@@ -268,9 +268,9 @@ int accettabile( char matrice[DIM][DIM], int x, int colonna, int riga, int dir) 
 			break;
 		case 3:
 			if(colonna+x<=10) {
-				for(i=1; i<x; i++) {
+				for(i=1; i<=x; i++) {
 					colonna++;
-					if(matrice[riga][colonna] == NAVE) {
+					if(matrice[riga][colonna] == NAVE || matrice[riga-1][colonna]==NAVE || matrice[riga+1][colonna]==NAVE) {
 						return -1;
 					}
 				}
@@ -281,9 +281,9 @@ int accettabile( char matrice[DIM][DIM], int x, int colonna, int riga, int dir) 
 			break;
 		case 4:
 			if(colonna-x>=0) {
-				for(i=1; i<x; i++) {
+				for(i=1; i<=x; i++) {
 					colonna--;
-					if(matrice[riga][colonna] == NAVE) {
+					if(matrice[riga][colonna] == NAVE || matrice[riga-1][colonna]==NAVE || matrice[riga+1][colonna]==NAVE) {
 						return -1;
 					}
 				}
