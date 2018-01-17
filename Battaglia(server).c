@@ -113,7 +113,7 @@ void GrigliaVuota(char G[DIM][DIM]) {
 	}
 }
 
-//controlla la sinistra della posizione passata con colonna e verifica se è all'interno della matrice
+//controlla la sinistra della posizione passata con colonna e verifica se ? all'interno della matrice
 void ControlloOrizzontaleSinistra(char matrice[DIM][DIM], int colonna, int riga, int x) {
 	int i;
 	if(colonna-x>=-1){
@@ -121,15 +121,10 @@ void ControlloOrizzontaleSinistra(char matrice[DIM][DIM], int colonna, int riga,
 			colonna--;
 			matrice[riga][colonna] = NAVE;
 		}
-	} else {
-		for(i=1; i<x; i++) {
-			colonna++;
-			matrice[riga][colonna] = NAVE;
-		}      
-    }
+	}
 }
 
-//controlla la destra della posizione passata con colonna e verifica se è all'interno della matrice
+//controlla la destra della posizione passata con colonna e verifica se ? all'interno della matrice
 void ControlloOrizzontaleDestra(char matrice[DIM][DIM], int colonna, int riga, int x) {
 	int i;
     if(colonna+x<=10) {
@@ -137,15 +132,10 @@ void ControlloOrizzontaleDestra(char matrice[DIM][DIM], int colonna, int riga, i
 			colonna++;
 			matrice[riga][colonna] = NAVE;
 		}
-	} else {
-        for(i=1; i<x; i++) {
-			colonna--;
-			matrice[riga][colonna] = NAVE;
-		}
-    }
+	}
 }
 
-//controlla il sopra della posizione passata con colonna e verifica se è all'interno della matrice
+//controlla il sopra della posizione passata con colonna e verifica se ? all'interno della matrice
 void ControlloVerticaleSu(char matrice[DIM][DIM], int colonna, int riga, int x) {
 	int i;
 	if(riga-x>=-1){
@@ -153,15 +143,10 @@ void ControlloVerticaleSu(char matrice[DIM][DIM], int colonna, int riga, int x) 
 			riga--;
 			matrice[riga][colonna] = NAVE;
 		}
-	} else {
-		for(i=1; i<x; i++) {
-			riga++;
-			matrice[riga][colonna] = NAVE;
-		}      
-    }
+	}
 }
 
-//controlla il sotto della posizione passata con colonna e verifica se è all'interno della matrice
+//controlla il sotto della posizione passata con colonna e verifica se ? all'interno della matrice
 void ControlloVerticaleGiu(char matrice[DIM][DIM], int colonna, int riga, int x) {
 	int i;
     if(riga+x<=10) {
@@ -169,12 +154,7 @@ void ControlloVerticaleGiu(char matrice[DIM][DIM], int colonna, int riga, int x)
 			riga++;
 			matrice[riga][colonna] = NAVE;
 		}
-	} else {
-        for(i=1; i<x; i++) {
-			riga--;
-			matrice[riga][colonna] = NAVE;
-		}
-    }
+	}
 }
 
 //prende una lettera e restituisce il numero equivalente per le colonne
@@ -234,8 +214,6 @@ void posizionaNave(char Griglia1[DIM][DIM], char Griglia2[DIM][DIM], int cl, int
 			ControlloOrizzontaleSinistra(Griglia2, cl, rg, x);
 			break;
 	}
-	system("cls");
-	StampaGriglia(Griglia1, Griglia2);
 }
 
 void prendiNave(char Griglia1[DIM][DIM], char Griglia2[DIM][DIM], char cl, char rg, int x, int dir) {
@@ -262,7 +240,7 @@ int accettabile( char matrice[DIM][DIM], int x, int colonna, int riga, int dir) 
 	int i;
 	switch(dir) {
 		case 1:
-			if(riga+x<=10) {
+			if(riga-x>=0) {
 				for(i=1; i<x; i++) {
 					riga--;
 					if(matrice[riga][colonna] == NAVE) {
@@ -270,12 +248,7 @@ int accettabile( char matrice[DIM][DIM], int x, int colonna, int riga, int dir) 
 					}
 				}
 			} else {
-				for(i=1; i<x; i++) {
-					riga++;
-					if(matrice[riga][colonna] == NAVE) {
-						return -1;
-					}
-				}
+				return -1;
 			}
 			return 1;
 			break;
@@ -287,13 +260,8 @@ int accettabile( char matrice[DIM][DIM], int x, int colonna, int riga, int dir) 
 						return -1;
 					}
 				}
-			} else {
-				for(i=1; i<x; i++) {
-					riga--;
-					if(matrice[riga][colonna] == NAVE) {
-						return -1;
-					}
-				}
+			}  else {
+				return -1;
 			}
 			return 1;
 			break;
@@ -305,43 +273,61 @@ int accettabile( char matrice[DIM][DIM], int x, int colonna, int riga, int dir) 
 						return -1;
 					}
 				}
-			} else {
-				for(i=1; i<x; i++) {
-					colonna--;
-					if(matrice[riga][colonna] == NAVE) {
-						return -1;
-					}
-				}
+			}  else {
+				return -1;
 			}
 			return 1;
 			break;
 		case 4:
-			if(colonna+x<=10) {
+			if(colonna-x>=0) {
 				for(i=1; i<x; i++) {
 					colonna--;
 					if(matrice[riga][colonna] == NAVE) {
 						return -1;
 					}
 				}
-			} else {
-				for(i=1; i<x; i++) {
-					colonna++;
-					if(matrice[riga][colonna] == NAVE) {
-						return -1;
-					}
-				}
+			}  else {
+				return -1;
 			}
 			return 1;
 			break;
 	}
 }
 
+void menShip(int n2, int n3, int n4, int n6) {
+	printf("Ti rimangono ancora queste navi:\n");
+	printf("%d navi da 2\n", n2);
+	printf("%d navi da 3\n", n3);
+	printf("%d navi da 4\n", n4);
+	printf("%d navi da 6\n", n6);
+}
+
+//controllo le posizioni nelle vicinanze di quella passata tramite riga e colonna, una di quelle posizioni è occupata da una nave restituisco 1
+int controlloInput(char matrice[DIM][DIM], int riga, int colonna) {
+	int i, j;
+	int xi[9] = {-1, +0, +1, +1, +1, +0, -1, -1, +0};
+	int xj[9] = {+1, +1, +1, +0, -1, -1, -1, +0, +0};
+	for(i=0; i!=9; i++) {
+		for(j=0; j!=9; j++) {
+			if(matrice[riga+xi[i]][colonna+xj[i]]==NAVE) {
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
+void pulisciSchermo(char m1[DIM][DIM], char m2[DIM][DIM]) {
+	system("cls");
+	StampaGriglia(m1, m2);
+}
+
 int main() {
 	char Griglia1[DIM][DIM];         //matrice per l'avversario
 	char Griglia2[DIM][DIM];         //matrice utilizzata da me
-	int i, j, dim, dir;
+	int i, j, dir;
 	char cooIns[4];
-	char cl, rg;
+	char cl, rg, x;
 	int nave2 = 4;
 	int nave3 = 3;
 	int nave4 = 2;
@@ -351,62 +337,59 @@ int main() {
 	
 	GrigliaVuota(Griglia1);
 	GrigliaVuota(Griglia2);
-	StampaGriglia(Griglia1, Griglia2);
 	
 	do {
+		pulisciSchermo(Griglia1, Griglia2);
 		do {
 			do {
-				printf("Scegli la grandezza della nave che vuoi inserire (2,3,4,6): ");
-				scanf("%d",&dim);
-			}while(dim!=2 && dim!=3 && dim!=4 && dim!=6);
+				pulisciSchermo(Griglia1, Griglia2);
+				menShip(nave2, nave3, nave4, nave6);
+				printf("\rScegli la grandezza della nave che vuoi inserire (2,3,4,6): ");
+				scanf("%c",&x);
+				switch(x) {
+					case 50: if(nave2>0) { } else { x = 1; }; break;
+					case 51: if(nave3>0) { } else { x = 1; }; break;
+					case 52: if(nave4>0) { } else { x = 1; }; break;
+					case 54: if(nave6>0) { } else { x = 1; }; break;
+				}
+			}while( x!=50 && x!=51 && x!=52 && x!=54 );
+			x -= 48;
+			pulisciSchermo(Griglia1, Griglia2);
+			printf("Hai scelto la nave da %d\n", x);
 			do {
 				printf("Inserisci le coordinate iniziali della nave (es. A9): ");
 				scanf("%s", cooIns);
 				cl = cooIns[0] - 65;
 				rg = cooIns[1] - 48;
-			}while( Griglia2[rg][cl] == NAVE || ((cl<0 || cl>9) || (rg<0 || rg>9)) ||cooIns[2]!=0);
+			}while( controlloInput(Griglia2, rg, cl) != 0 || ((cl<0 || cl>9) || (rg<0 || rg>9)) || cooIns[2]!=0);
+			pulisciSchermo(Griglia1, Griglia2);
+			printf("Le coordinate iniziali [%c,%d]\n", (cl+65), rg);
 			dir = selezioneDirezione();
-		}while(accettabile(Griglia2, dim, cl, rg, dir) != 1);
+		}while(accettabile(Griglia2, x, cl, rg, dir) != 1);
 		
-		switch(dim) {
+		switch(x) {
 			case 2: 
-				if(nave2>0){
-					prendiNave(Griglia1, Griglia2, cl, rg, dim, dir);
+					prendiNave(Griglia1, Griglia2, cl, rg, x, dir);
 					nave2--;
-					contNavi++;
-				} else {
-					printf("Tutte le navi da 2 sono state inserite\n");
-				} 
+					contNavi++; 
 				break;
 			case 3: 
-				if(nave3>0) {
-					prendiNave(Griglia1, Griglia2, cl, rg, dim, dir);
+					prendiNave(Griglia1, Griglia2, cl, rg, x, dir);
 					nave3--;
 					contNavi++;
-				} else {
-					printf("Tutte le navi da 3 sono state inserite\n");
-				} 
 				break;
 			case 4: 
-				if(nave4>0) {
-					prendiNave(Griglia1, Griglia2, cl, rg, dim, dir);
+					prendiNave(Griglia1, Griglia2, cl, rg, x, dir);
 					nave4--;
 					contNavi++;
-				} else {
-					printf("Tutte le navi da 4 sono state inserite\n");
-				} 
 				break;
 			case 6: 
-				if(nave6>0) {
-					prendiNave(Griglia1, Griglia2, cl, rg, dim, dir);
+					prendiNave(Griglia1, Griglia2, cl, rg, x, dir);
 					nave6--;
 					contNavi++;
-				} else {
-					printf("Tutte le navi da 6 sono state inserite\n");
-				} 
 				break;		
 		}
-	} while(contNavi!=1);
+	} while(contNavi!=10);
 	
 	int sock, clientsd, port = PORTA;
 	char buffer[256];

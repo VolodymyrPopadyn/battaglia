@@ -187,7 +187,7 @@ int selezioneDirezione() {
 	int take;
 	do {
 		printf("1) La nave va in su\n");
-		printf("2) La nave va in giu'\n");
+		printf("2) La nave va in gi%c\n", 151);
 		printf("3) La nave va a destra\n");
 		printf("4) La nave va a sinistra\n");
 		printf("Inserisci la tua decisione: ");
@@ -203,7 +203,7 @@ void posizionaNave(char Griglia1[DIM][DIM], char Griglia2[DIM][DIM], int cl, int
 			ControlloVerticaleSu(Griglia2, cl, rg, x);
 			break;
 		
-		case 2:		//la nave va in gi�\n
+		case 2:		//la nave va in giù\n
 			ControlloVerticaleGiu(Griglia2, cl, rg, x);
 			break;
 			
@@ -222,7 +222,7 @@ void prendiNave(char Griglia1[DIM][DIM], char Griglia2[DIM][DIM], char cl, char 
 	posizionaNave(Griglia1, Griglia2, cl, rg, x, dir);
 }
 
-//funzione per determinare se si � presa una nave oppure no
+//funzione per determinare se si è presa una nave oppure no
 int naveColpita(char G1[DIM][DIM], int col, int rig) {
 	if(G1[rig][col] == NAVE) {
 		return 1;
