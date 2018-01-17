@@ -235,8 +235,6 @@ void posizionaNave(char Griglia1[DIM][DIM], char Griglia2[DIM][DIM], int cl, int
 			ControlloOrizzontaleSinistra(Griglia2, cl, rg, x);
 			break;
 	}
-	system("cls");
-	StampaGriglia(Griglia1, Griglia2);
 }
 
 void prendiNave(char Griglia1[DIM][DIM], char Griglia2[DIM][DIM], char cl, char rg, int x, int dir) {
@@ -345,6 +343,21 @@ void menShip(int n2, int n3, int n4, int n6) {
 	printf("%d navi da 6\n", n6);
 }
 
+//controllo le posizioni nelle vicinanze di quella passata tramite riga e colonna, una di quelle posizioni è occupata da una nave restituisco 1
+int controlloInput(char matrice[DIM][DIM], int riga, int colonna) {
+	int i, j;
+	int xi[9] = {-1, +0, +1, +1, +1, +0, -1, -1, +0};
+	int xj[9] = {+1, +1, +1, +0, -1, -1, -1, +0, +0};
+	for(i=0; i!=9; i++) {
+		for(j=0; j!=9; j++) {
+			if(matrice[riga+xi[i]][colonna+xj[i]]==NAVE) {
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
 int main() {
 	char Griglia1[DIM][DIM];         //matrice per l'avversario
 	char Griglia2[DIM][DIM];         //matrice utilizzata da me
@@ -360,9 +373,10 @@ int main() {
 	
 	GrigliaVuota(Griglia1);
 	GrigliaVuota(Griglia2);
-	StampaGriglia(Griglia1, Griglia2);
 	
 	do {
+		system("cls");
+		StampaGriglia(Griglia1, Griglia2);
 		do {
 			menShip(nave2, nave3, nave4, nave6);
 			do {
@@ -381,46 +395,30 @@ int main() {
 				scanf("%s", cooIns);
 				cl = cooIns[0] - 65;
 				rg = cooIns[1] - 48;
-			}while( Griglia2[rg][cl] == NAVE || ((cl<0 || cl>9) || (rg<0 || rg>9)) || cooIns[2]!=0);
+			}while( controlloInput(Griglia2, rg, cl) != 0 || ((cl<0 || cl>9) || (rg<0 || rg>9)) || cooIns[2]!=0);
 			dir = selezioneDirezione();
 		}while(accettabile(Griglia2, x, cl, rg, dir) != 1);
 		
 		switch(x) {
 			case 2: 
-				if(nave2>0){
 					prendiNave(Griglia1, Griglia2, cl, rg, x, dir);
 					nave2--;
-					contNavi++;
-				} else {
-					printf("Tutte le navi da 2 sono state inserite\n");
-				} 
+					contNavi++; 
 				break;
 			case 3: 
-				if(nave3>0) {
 					prendiNave(Griglia1, Griglia2, cl, rg, x, dir);
 					nave3--;
 					contNavi++;
-				} else {
-					printf("Tutte le navi da 3 sono state inserite\n");
-				} 
 				break;
 			case 4: 
-				if(nave4>0) {
 					prendiNave(Griglia1, Griglia2, cl, rg, x, dir);
 					nave4--;
 					contNavi++;
-				} else {
-					printf("Tutte le navi da 4 sono state inserite\n");
-				} 
 				break;
 			case 6: 
-				if(nave6>0) {
 					prendiNave(Griglia1, Griglia2, cl, rg, x, dir);
 					nave6--;
 					contNavi++;
-				} else {
-					printf("Tutte le navi da 6 sono state inserite\n");
-				} 
 				break;		
 		}
 	} while(contNavi!=10);
