@@ -122,12 +122,7 @@ void ControlloOrizzontaleSinistra(char matrice[DIM][DIM], int colonna, int riga,
 			colonna--;
 			matrice[riga][colonna] = NAVE;
 		}
-	} else {
-		for(i=1; i<x; i++) {
-			colonna++;
-			matrice[riga][colonna] = NAVE;
-		}      
-    }
+	}
 }
 
 //controlla la destra della posizione passata con colonna e verifica se � all'interno della matrice
@@ -138,12 +133,7 @@ void ControlloOrizzontaleDestra(char matrice[DIM][DIM], int colonna, int riga, i
 			colonna++;
 			matrice[riga][colonna] = NAVE;
 		}
-	} else {
-        for(i=1; i<x; i++) {
-			colonna--;
-			matrice[riga][colonna] = NAVE;
-		}
-    }
+	}
 }
 
 //controlla il sopra della posizione passata con colonna e verifica se � all'interno della matrice
@@ -154,12 +144,7 @@ void ControlloVerticaleSu(char matrice[DIM][DIM], int colonna, int riga, int x) 
 			riga--;
 			matrice[riga][colonna] = NAVE;
 		}
-	} else {
-		for(i=1; i<x; i++) {
-			riga++;
-			matrice[riga][colonna] = NAVE;
-		}      
-    }
+	}
 }
 
 //controlla il sotto della posizione passata con colonna e verifica se � all'interno della matrice
@@ -170,12 +155,7 @@ void ControlloVerticaleGiu(char matrice[DIM][DIM], int colonna, int riga, int x)
 			riga++;
 			matrice[riga][colonna] = NAVE;
 		}
-	} else {
-        for(i=1; i<x; i++) {
-			riga--;
-			matrice[riga][colonna] = NAVE;
-		}
-    }
+	}
 }
 
 //prende una lettera e restituisce il numero equivalente per le colonne
@@ -261,7 +241,7 @@ int accettabile( char matrice[DIM][DIM], int x, int colonna, int riga, int dir) 
 	int i;
 	switch(dir) {
 		case 1:
-			if(riga+x<=10) {
+			if(riga-x>=0) {
 				for(i=1; i<x; i++) {
 					riga--;
 					if(matrice[riga][colonna] == NAVE) {
@@ -269,12 +249,7 @@ int accettabile( char matrice[DIM][DIM], int x, int colonna, int riga, int dir) 
 					}
 				}
 			} else {
-				for(i=1; i<x; i++) {
-					riga++;
-					if(matrice[riga][colonna] == NAVE) {
-						return -1;
-					}
-				}
+				return -1;
 			}
 			return 1;
 			break;
@@ -286,13 +261,8 @@ int accettabile( char matrice[DIM][DIM], int x, int colonna, int riga, int dir) 
 						return -1;
 					}
 				}
-			} else {
-				for(i=1; i<x; i++) {
-					riga--;
-					if(matrice[riga][colonna] == NAVE) {
-						return -1;
-					}
-				}
+			}  else {
+				return -1;
 			}
 			return 1;
 			break;
@@ -304,31 +274,21 @@ int accettabile( char matrice[DIM][DIM], int x, int colonna, int riga, int dir) 
 						return -1;
 					}
 				}
-			} else {
-				for(i=1; i<x; i++) {
-					colonna--;
-					if(matrice[riga][colonna] == NAVE) {
-						return -1;
-					}
-				}
+			}  else {
+				return -1;
 			}
 			return 1;
 			break;
 		case 4:
-			if(colonna+x<=10) {
+			if(colonna-x>=0) {
 				for(i=1; i<x; i++) {
 					colonna--;
 					if(matrice[riga][colonna] == NAVE) {
 						return -1;
 					}
 				}
-			} else {
-				for(i=1; i<x; i++) {
-					colonna++;
-					if(matrice[riga][colonna] == NAVE) {
-						return -1;
-					}
-				}
+			}  else {
+				return -1;
 			}
 			return 1;
 			break;
@@ -358,6 +318,11 @@ int controlloInput(char matrice[DIM][DIM], int riga, int colonna) {
 	return 0;
 }
 
+void pulisciSchermo(char m1[DIM][DIM], char m2[DIM][DIM]) {
+	system("cls");
+	StampaGriglia(m1, m2);
+}
+
 int main() {
 	char Griglia1[DIM][DIM];         //matrice per l'avversario
 	char Griglia2[DIM][DIM];         //matrice utilizzata da me
@@ -375,11 +340,11 @@ int main() {
 	GrigliaVuota(Griglia2);
 	
 	do {
-		system("cls");
-		StampaGriglia(Griglia1, Griglia2);
+		pulisciSchermo(Griglia1, Griglia2);
 		do {
-			menShip(nave2, nave3, nave4, nave6);
 			do {
+				pulisciSchermo(Griglia1, Griglia2);
+				menShip(nave2, nave3, nave4, nave6);
 				printf("\rScegli la grandezza della nave che vuoi inserire (2,3,4,6): ");
 				scanf("%c",&x);
 				switch(x) {
@@ -390,12 +355,16 @@ int main() {
 				}
 			}while( x!=50 && x!=51 && x!=52 && x!=54 );
 			x -= 48;
+			pulisciSchermo(Griglia1, Griglia2);
+			printf("Hai scelto la nave da %d\n", x);
 			do {
 				printf("Inserisci le coordinate iniziali della nave (es. A9): ");
 				scanf("%s", cooIns);
 				cl = cooIns[0] - 65;
 				rg = cooIns[1] - 48;
 			}while( controlloInput(Griglia2, rg, cl) != 0 || ((cl<0 || cl>9) || (rg<0 || rg>9)) || cooIns[2]!=0);
+			pulisciSchermo(Griglia1, Griglia2);
+			printf("Le coordinate iniziali [%c,%d]\n", (cl+65), rg);
 			dir = selezioneDirezione();
 		}while(accettabile(Griglia2, x, cl, rg, dir) != 1);
 		
