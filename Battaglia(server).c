@@ -429,8 +429,7 @@ int main() {
 	int controlloInserimento = 0;
 	int naviColpite = 0;
 	do {
-		system("cls");
-		StampaGriglia(Griglia1, Griglia2);
+		pulisciSchermo(Griglia1, Griglia2);
 		//invia le coordinate
 		do {
 			
@@ -457,11 +456,11 @@ int main() {
 
 		//posizionamento sulla propria matrice colpito o acqua
 		switch(preso) {
+			case 101: vittoria = 1;
 			case 110: Griglia1[rigIns][colIns] = ACQUA; break;
 			case 121: Griglia1[rigIns][colIns] = COLPITO; break;
 		}
-		system("cls");
-		StampaGriglia(Griglia1, Griglia2);
+		pulisciSchermo(Griglia1, Griglia2);
 	
 		//riceve coordinate
 		while(controlloInserimento != 1){
@@ -478,17 +477,16 @@ int main() {
 		controlloInserimento = 0;
 		
 		//verifica nave colpita
-		
-		if(naveColpita(Griglia2, colRic, rigRic) == 1) {
-			strcpy(buffer, "y");
-			Griglia2[rigRic][colRic] = COLPITO;
+		if( Griglia2[rigRic][colRic] == NAVE ) {
 			naviColpite++;
-		} else {
-			strcpy(buffer, "n");
+			buffer[0] = 'y';		//yes, hit
+			Griglia2[rigRic][colRic] = COLPITO;
+		} else if(Griglia2[rigRic][colRic] == ' ' ){
+			buffer[0] = 'n';
 			Griglia2[rigRic][colRic] = ACQUA;
 		}
-		if(naviColpite==31) {
-			strcpy(buffer, "e");	//end of game
+		if(naviColpite == TOTNAVI) {
+			buffer[0] = 'e';		//end of game
 		}
 		//invia messaggio colpito?
 		send(clientsd, buffer, sizeof(buffer), 0);

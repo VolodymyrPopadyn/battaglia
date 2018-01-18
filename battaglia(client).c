@@ -6,6 +6,7 @@
 #define close closesocket
 
 //inizializzazione delle costanti
+const int TOTNAVI = 31;
 const int DIM = 10;
 const char NAVE = '*';
 const char COLPITO = 'x';
@@ -109,7 +110,7 @@ void GrigliaVuota(char G[DIM][DIM]) {
 	int i, j;
 	for(i=0; i!=DIM; i++) {
 		for(j=0; j!=DIM; j++) {
-			G[i][j]= ' ';
+			G[i][j]= VUOTO;
 		}
 	}
 }
@@ -220,15 +221,6 @@ void posizionaNave(char Griglia1[DIM][DIM], char Griglia2[DIM][DIM], int cl, int
 void prendiNave(char Griglia1[DIM][DIM], char Griglia2[DIM][DIM], char cl, char rg, int x, int dir) {
 	Griglia2[rg][cl] = NAVE;
 	posizionaNave(Griglia1, Griglia2, cl, rg, x, dir);
-}
-
-//funzione per determinare se si è presa una nave oppure no
-int naveColpita(char G1[DIM][DIM], int col, int rig) {
-	if(G1[rig][col] == NAVE) {
-		return 1;
-	} else {
-		return -1;
-	}
 }
 
 //riempie nella posizione indicata col messaggio passato
@@ -432,8 +424,7 @@ int main() {
 	int controlloInserimento = 0;
 	char colIns, rigIns, colRic, rigRic, preso;
 	do{
-		system("cls");
-		StampaGriglia(Griglia1, Griglia2);
+		pulisciSchermo(Griglia1, Griglia2);
 		//riceve coordinate
 		while(controlloInserimento != 1){
 			while (recv(sock, buffer2, 255, 0) > 0 && flag ==1) {
@@ -449,25 +440,24 @@ int main() {
 		controlloInserimento = 0;
 		
 		//verifica nave colpita
-		if(colRic == 101) {
-			vittoria = 1;
-			buffer[0] = 'e';			//e = end of game
-		} else if(naveColpita(Griglia2, colRic, rigRic) == 1) {
-			strcpy(buffer, "y");		//y = yes, hit
-			riempiGriglia(Griglia2, colRic, rigRic, COLPITO);
+		if( Griglia2[rigRic][colRic] == NAVE ) {
+			naviColpite++;
+			buffer[0] = 'y';		//yes, hit
+			Griglia2[rigRic][colRic] = COLPITO;
+		} else if( Griglia2[rigRic][colRic] == VUOTO ) {
+			buffer[0] = 'n';
+			Griglia2[rigRic][colRic] = ACQUA;
+		} 
+		if( naviColpite == TOTNAVI ) {
+			buffer[0] = 'e';		//end of game
+			send(sock, buffer, sizeof(buffer), 0);
 		} else {
-			strcpy(buffer, "n");		//n = no, no hit
-			riempiGriglia(Griglia2, colRic, rigRic, ACQUA);
-		}
-		//invia messaggio colpito?
-		send(sock, buffer, sizeof(buffer), 0);
-		
-		system("cls");
-		StampaGriglia(Griglia1, Griglia2);
-		if(vittoria != 1) {
+			//invia messaggio colpito?
+			send(sock, buffer, sizeof(buffer), 0);
+			pulisciSchermo(Griglia1, Griglia2);
+
 			//invia coordinate
 			do {
-				
 				printf("\rInserisci le coordinate che desideri colpire: ");
 				scanf("%s", &buffer);
 				colIns = buffer[0] - 65;
@@ -491,12 +481,20 @@ int main() {
 
 			//posizionamento sulla propria matrice colpito o acqua
 			switch(preso) {
+				case 101: vittoria = 1;
 				case 110: Griglia1[rigIns][colIns] = ACQUA; break;
 				case 121: Griglia1[rigIns][colIns] = COLPITO; break;
 			}
+				
 			
 		}
-	}while(naviColpite < 31 || vittoria!=1);
+	}while(naviColpite < TOTNAVI || vittoria!=1);
+	
+	if(naviColpite==31) {
+		printf("Mi spiace, hai perso!");
+	} else {
+		printf("Congratulazioni!, Hai vinto!");
+	}
 	
 	close(sock);
 	WSACleanup();
